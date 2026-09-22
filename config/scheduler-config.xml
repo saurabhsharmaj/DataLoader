@@ -18,7 +18,7 @@
             <argument name="dateoffsetholidaRegion" value="ALL"/>
             <argument name="filterBatchName" value="user_complex_filter"/>
             <argument name="onlyloadMissingBatch" value="true"/>
-            <argument name="cluster" value="RISKMOD"/>
+            <argument name="cluster" value="my-cluster"/>
         </arguments>
 
     </job>
