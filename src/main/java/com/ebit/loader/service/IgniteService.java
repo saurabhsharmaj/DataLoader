@@ -1,5 +1,6 @@
 package com.ebit.loader.service;
 
+import com.ebit.loader.model.User;
 import com.ebit.loader.model.UserRequest;
 import org.apache.ignite.client.IgniteClient;
 import org.apache.ignite.sql.ResultSet;
@@ -22,10 +23,10 @@ public class IgniteService {
         this.igniteClient = igniteClient;
     }
 
-    public void saveUser(UserRequest userRequest) {
+    public void saveUserReq(UserRequest userRequest) {
 
         Table table = igniteClient.tables()
-                .table("users");
+                .table("userrequest");
 
         RecordView<Tuple> view = table.recordView();
 
@@ -37,10 +38,10 @@ public class IgniteService {
         view.upsert(null, user);
     }
 
-    public UserRequest getUser(Integer id) {
+    public UserRequest getUserReq(Integer id) {
 
         Table table = igniteClient.tables()
-                .table("users");
+                .table("userrequest");
 
         RecordView<Tuple> view = table.recordView();
 
@@ -59,9 +60,9 @@ public class IgniteService {
         return response;
     }
 
-    public void streamUsers(List<UserRequest> users) {
+    public void streamUserReq(List<UserRequest> users) {
 
-        Table table = igniteClient.tables().table("users");
+        Table table = igniteClient.tables().table("userrequest");
 
         RecordView<Tuple> view = table.recordView();
 
@@ -91,14 +92,55 @@ public class IgniteService {
 
         future.join();
     }
-    public @Nullable List<UserRequest> getStreamUsers() {
+
+    public void streamUsers(List<User> users) {
+
+        Table table = igniteClient.tables().table("users");
+
+        RecordView<Tuple> view = table.recordView();
+
+        DataStreamerOptions options = DataStreamerOptions.builder()
+                .pageSize(1000)
+                .autoFlushInterval(1000)
+                .retryLimit(3)
+                .build();
+
+        CompletableFuture<Void> future;
+
+        try (SubmissionPublisher<DataStreamerItem<Tuple>> publisher =
+                     new SubmissionPublisher<>()) {
+
+            future = view.streamData(publisher, options);
+
+            for (User user : users) {
+
+                Tuple tuple = Tuple.create()
+                        .set("id", user.getId())
+                        .set("created_at", user.getCreatedAt())
+                        .set("created_by", user.getCreatedBy())
+                        .set("email_address", user.getEmailAddress())
+                        .set("first_name", user.getFirstName())
+                        .set("last_name", user.getLastName())
+                        .set("updated_at", user.getUpdatedAt())
+                        .set("updated_by", user.getUpdatedBy());
+
+                publisher.submit(
+                        DataStreamerItem.of(tuple)
+                );
+            }
+        }
+
+        future.join();
+    }
+
+    public @Nullable List<UserRequest> getStreamUserReq() {
 
         List<UserRequest> users = new ArrayList<>();
 
         try (ResultSet<SqlRow> resultSet =
                      igniteClient.sql().execute(
                              null,
-                             "SELECT id, name, email FROM users"
+                             "SELECT id, name, email FROM userrequest"
                      )) {
 
             while (resultSet.hasNext()) {

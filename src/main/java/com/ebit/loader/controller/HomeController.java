@@ -23,21 +23,21 @@ public class HomeController {
             @PathVariable Integer id,
             @RequestBody UserRequest request) {
 
-        igniteService.saveUser(request);
+        igniteService.saveUserReq(request);
         return ResponseEntity.ok("User saved");
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<UserRequest> get(
             @PathVariable Integer id) {
-        return ResponseEntity.ok(igniteService.getUser(id));
+        return ResponseEntity.ok(igniteService.getUserReq(id));
     }
 
     @PostMapping("/stream")
     public ResponseEntity<String> streamUsers(
             @RequestBody List<UserRequest> users) {
 
-        igniteService.streamUsers(users);
+        igniteService.streamUserReq(users);
 
         return ResponseEntity.ok(
                 "Streamed " + users.size() + " users"
@@ -46,6 +46,6 @@ public class HomeController {
 
     @GetMapping("/stream")
     public ResponseEntity<List<UserRequest>> getUsers() {
-        return ResponseEntity.ok(igniteService.getStreamUsers());
+        return ResponseEntity.ok(igniteService.getStreamUserReq());
     }
 }
