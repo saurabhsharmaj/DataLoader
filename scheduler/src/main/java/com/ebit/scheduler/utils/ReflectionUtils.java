@@ -1,9 +1,10 @@
 package com.ebit.scheduler.utils;
 
 import com.ebit.scheduler.models.ManualSchedulerArgument;
+import org.springframework.context.ApplicationContext;
 
 import java.lang.reflect.Method;
-import org.springframework.context.ApplicationContext;
+import java.util.Map;
 
 public final class ReflectionUtils {
 
@@ -18,23 +19,66 @@ public final class ReflectionUtils {
 
         try {
 
-            Class<?> clazz = Class.forName(className);
+            Class<?> clazz =
+                    Class.forName(className);
 
-            Object bean = applicationContext.getBean(clazz);
+            Object bean =
+                    applicationContext.getBean(clazz);
 
-            Method method = clazz.getMethod(
-                    methodName,
-                    ManualSchedulerArgument.class
-            );
+            /*
+             * 1. Try:
+             *
+             * loadUsers(Map<String, String>)
+             */
+            try {
 
-            return method.invoke(bean, arguments);
+                Method method =
+                        clazz.getMethod(
+                                methodName,
+                                Map.class
+                        );
+
+                System.out.println(
+                        "Invoking: "
+                                + className
+                                + "."
+                                + methodName
+                                + "(Map)"
+                );
+
+                return method.invoke(
+                        bean,
+                        arguments.getArguments()
+                );
+
+            } catch (NoSuchMethodException ignored) {
+
+                /*
+                 * 2. Fallback:
+                 *
+                 * loadUsers()
+                 */
+                Method method =
+                        clazz.getMethod(methodName);
+
+                System.out.println(
+                        "Invoking: "
+                                + className
+                                + "."
+                                + methodName
+                                + "()"
+                );
+
+                return method.invoke(bean);
+            }
 
         } catch (Exception e) {
 
             throw new RuntimeException(
-                    "Failed to invoke " +
-                            className + "." +
-                            methodName,
+                    "Failed to invoke "
+                            + className
+                            + "."
+                            + methodName,
                     e
             );
         }

@@ -1,17 +1,26 @@
-<job name="user-loader">
+<?xml version="1.0" encoding="UTF-8"?>
 
-    <module>loader</module>
-    <mainClass>
-        com.ebit.loader.loader.UserLoader
-    </mainClass>
-    <method>loadUsers</method>
-    <version>1.0</version>
-    <arguments>
-        <argument name="businessLine" value="loader"/>
-        <argument name="dataoffset" value="2"/>
-        <argument name="dateoffsetholidaRegion" value="ALL"/>
-        <argument name="filterBatchName" value="user_complex_filter"/>
-        <argument name="onlyloadMissingBatch" value="true"/>
-        <argument name="cluster" value="RISKMOD"/>
-    </arguments>
-</job>
+<scheduler>
+
+    <job name="userLoader">
+
+        <module>loader</module>
+
+        <mainClass>com.ebit.loader.loader.UserLoader</mainClass>
+
+        <method>loadUsers</method>
+
+        <version>1.0</version>
+
+        <arguments>
+            <argument name="businessLine" value="loader"/>
+            <argument name="dataoffset" value="2"/>
+            <argument name="dateoffsetholidaRegion" value="ALL"/>
+            <argument name="filterBatchName" value="user_complex_filter"/>
+            <argument name="onlyloadMissingBatch" value="true"/>
+            <argument name="cluster" value="RISKMOD"/>
+        </arguments>
+
+    </job>
+
+</scheduler>

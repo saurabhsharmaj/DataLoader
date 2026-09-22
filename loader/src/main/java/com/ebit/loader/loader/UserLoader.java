@@ -8,6 +8,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class UserLoader {
@@ -26,9 +27,36 @@ public class UserLoader {
         this.igniteService = igniteService;
     }
 
+    /*
+     * Existing REST API method.
+     * Do NOT change this.
+     */
     public void loadUsers() {
+        loadUsers(0);
+    }
+
+    /*
+     * Scheduler-compatible method.
+     */
+    public void loadUsers(Map<String, String> arguments) {
 
         int offset = 0;
+
+        if (arguments != null &&
+                arguments.containsKey("dataoffset")) {
+
+            offset = Integer.parseInt(
+                    arguments.get("dataoffset")
+            );
+        }
+
+        loadUsers(offset);
+    }
+
+    /*
+     * Common implementation.
+     */
+    private void loadUsers(int offset) {
 
         String sql = """
                 SELECT
@@ -63,7 +91,6 @@ public class UserLoader {
                             ", size=" + users.size()
             );
 
-            // Send complete batch to Ignite
             igniteService.streamUsers(users);
 
             offset += users.size();
