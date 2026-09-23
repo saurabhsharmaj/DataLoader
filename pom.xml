@@ -18,6 +18,7 @@
 		<module>loader</module>
 		<module>scheduler</module>
 		<module>loader/mysql-loader</module>
+		<module>loader/elasticsearch-loader</module>
 	</modules>
 	<scm>
 		<connection/>
