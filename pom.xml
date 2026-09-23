@@ -17,6 +17,7 @@
 		<module>schemas</module>
 		<module>loader</module>
 		<module>scheduler</module>
+		<module>loader/mysql-loader</module>
 	</modules>
 	<scm>
 		<connection/>
