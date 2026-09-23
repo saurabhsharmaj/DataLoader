@@ -1,5 +1,6 @@
 package com.ebit.loader.common;
 
+
 import com.ebit.loader.model.User;
 import org.springframework.jdbc.core.RowMapper;
 
