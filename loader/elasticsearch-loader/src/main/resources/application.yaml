@@ -1,0 +1,12 @@
+spring:
+  application:
+    name: elasticsearch-loader
+
+  data:
+    elasticsearch:
+      uris: localhost:9200
+      username: elastic
+      password: elasticsearch-password
+
+loader:
+  batch-size: 100
